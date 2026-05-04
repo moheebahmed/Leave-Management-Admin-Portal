@@ -44,20 +44,20 @@ const NAV_GROUPS = [
   {
     label: "Attendance",
     items: [
-      // { to: '/attendance-upload', label: 'Upload Attendance', icon: Upload },
-      // { to: '/attendance-records', label: 'Attendance Records', icon: CalendarCheck },
-      // { to: '/attendance-register', label: 'Attendance Register', icon: TableProperties },
+      { to: '/attendance-upload', label: 'Upload Attendance', icon: Upload },
+      { to: '/attendance-records', label: 'Attendance Records', icon: CalendarCheck },
+      { to: '/attendance-register', label: 'Attendance Register', icon: TableProperties },
       { to: "/shifts", label: "Shifts", icon: Clock },
       { to: "/holidays", label: "Holidays", icon: CalendarDays },
     ],
   },
-  // {
-  // label: 'Payroll',
-  // items: [
-  // { to: '/payroll', label: 'Payroll', icon: Banknote },
-  // { to: '/payroll-settings', label: 'Payroll Settings', icon: Settings },
-  // ],
-  // },
+  {
+  label: 'Payroll',
+  items: [
+  { to: '/payroll', label: 'Payroll', icon: Banknote },
+  { to: '/payroll-settings', label: 'Payroll Settings', icon: Settings },
+  ],
+  },
   {
     label: "General",
     items: [{ to: "/notifications", label: "Notifications", icon: Bell }],
