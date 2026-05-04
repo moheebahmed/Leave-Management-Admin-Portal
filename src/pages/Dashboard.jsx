@@ -181,7 +181,7 @@ const Dashboard = () => {
                             ? "bg-emerald/10 text-emerald"
                             : a.status === "REJECTED"
                               ? "bg-danger/10 text-danger"
-                              : "bg-accent/10 text-accent"
+                              : "bg-accent/10 text-[#f59e0b]"
                         }`}
                       >
                         {a.status}
