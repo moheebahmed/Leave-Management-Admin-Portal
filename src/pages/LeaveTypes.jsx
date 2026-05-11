@@ -52,8 +52,6 @@ const LeaveTypes = () => {
     if (!form.code.trim()) e.code = "Code is required";
     if (form.min_notice_days === "" || isNaN(form.min_notice_days))
       e.min_notice_days = "Required";
-    if (form.allow_past_dates === "" || isNaN(form.allow_past_dates))
-      e.allow_past_dates = "Required";
     if (form.max_allowed_leaves === "" || isNaN(form.max_allowed_leaves))
       e.max_allowed_leaves = "Required";
     setErrors(e);
@@ -69,7 +67,7 @@ const LeaveTypes = () => {
         name: form.name,
         code: form.code,
         min_notice_days: Number(form.min_notice_days),
-        allow_past_dates: Number(form.allow_past_dates),
+        allow_past_dates: Number(form.allow_past_dates) || 0,
         max_allowed_leaves: Number(form.max_allowed_leaves),
       };
       if (editId) {
