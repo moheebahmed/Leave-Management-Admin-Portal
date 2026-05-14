@@ -79,10 +79,9 @@ const RoleCell = ({ emp, onRoleChange, showToast }) => {
               key={r}
               onClick={() => handleSelect(r)}
               className={`px-3 py-2 text-xs cursor-pointer transition-colors
-                ${
-                  r === emp.User?.role
-                    ? "bg-accent/10 text-accent font-semibold"
-                    : "text-slate-300 hover:bg-white/5"
+                ${r === emp.User?.role
+                  ? "bg-accent/10 text-accent font-semibold"
+                  : "text-slate-300 hover:bg-white/5"
                 }`}
             >
               {r}
@@ -306,8 +305,8 @@ const Employees = () => {
                       <span className="text-xs px-2 py-0.5 rounded-full bg-accent/10 text-accent border border-accent/20">
                         {typeof emp.grade === "object"
                           ? emp.grade?.grade_name ||
-                            emp.grade?.grade_code ||
-                            "—"
+                          emp.grade?.grade_code ||
+                          "—"
                           : emp.grade}
                       </span>
                     ) : (
@@ -320,9 +319,9 @@ const Employees = () => {
                     {emp.employmentType || emp.employment_type ? (
                       <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                         {typeof (emp.employmentType || emp.employment_type) ===
-                        "object"
+                          "object"
                           ? (emp.employmentType || emp.employment_type)
-                              ?.type_name || "—"
+                            ?.type_name || "—"
                           : emp.employmentType || emp.employment_type}
                       </span>
                     ) : (
@@ -395,7 +394,7 @@ const Employees = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            className="absolute inset-0 top-[50px] backdrop-blur-sm"
             onClick={() => setDeleteTarget(null)}
           />
           {/* Modal Card */}

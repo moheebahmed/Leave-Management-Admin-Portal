@@ -7,7 +7,7 @@ const ConfirmModal = ({ target, onConfirm, onCancel, entityLabel = "item" }) => 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 top-[50px] backdrop-blur-sm"
         onClick={onCancel}
       />
       {/* Modal Card */}
@@ -24,8 +24,8 @@ const ConfirmModal = ({ target, onConfirm, onCancel, entityLabel = "item" }) => 
 
         {/* Message */}
         <p className="text-center text-slate-400 text-sm mb-6">
-          Are you sure you want to delete{" "}
-          <span className="text-white font-medium">"{target.name}"</span>?{" "}
+          Are you sure you want to delete
+          <span className="text-white font-medium">"{target.name}"</span>?
           <span className="text-danger/80">This action cannot be undone.</span>
         </p>
 
