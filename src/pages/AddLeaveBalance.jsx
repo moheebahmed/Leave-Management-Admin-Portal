@@ -69,7 +69,7 @@ const AddLeaveBalance = () => {
               });
               setLeaveForm(prefilled);
             })
-            .catch(() => { });
+            .catch(() => {});
         } else {
           // ✅ FIX: Employee select hone tak kuch auto-select nahi
           setLeaveForm({});
@@ -259,9 +259,10 @@ const AddLeaveBalance = () => {
                     <div key={lt.id}>
                       <div
                         className={`flex items-center gap-3 p-3 rounded-lg border transition-all cursor-pointer
-                          ${isChecked
-                            ? "border-accent/40 bg-accent/5"
-                            : "border-border bg-surface/40 hover:border-slate-600"
+                          ${
+                            isChecked
+                              ? "border-accent/40 bg-accent/5"
+                              : "border-border bg-surface/40 hover:border-slate-600"
                           }`}
                         onClick={() => toggleLeave(lt.id)}
                       >
@@ -323,10 +324,11 @@ const AddLeaveBalance = () => {
                                   setDays(lt.id, val);
                                 }
                               }}
-                              className={`w-20 text-xs text-center form-input-base py-1 ${isExceeded
+                              className={`w-20 text-xs text-center form-input-base py-1 ${
+                                isExceeded
                                   ? "!border-danger focus:!ring-danger/10"
                                   : ""
-                                }`}
+                              }`}
                             />
                             {isExceeded && (
                               <span className="text-xs text-danger font-medium">
@@ -364,7 +366,7 @@ const AddLeaveBalance = () => {
               </button>
               <button
                 type="button"
-                className="flex-1 btn-outline flex justify-center items-center"
+                className="btn-outline"
                 onClick={() => navigate("/leave-balance")}
               >
                 Cancel
