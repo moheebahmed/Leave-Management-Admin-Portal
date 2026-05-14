@@ -18,8 +18,12 @@ import {
   CalendarDays,
   TableProperties,
   Briefcase,
-  BarChart2,
-  UserCheck,
+  BarChart3,
+  ScrollText,
+  FileText,
+  CalendarClock,
+  ClipboardCheck,
+  Layers,
 } from "lucide-react";
 
 const NAV_GROUPS = [
@@ -33,9 +37,6 @@ const NAV_GROUPS = [
       { to: "/employees", label: "Employees", icon: Users },
       { to: "/add-employee", label: "Add Employees", icon: UserPlus },
       { to: "/departments", label: "Departments", icon: Building2 },
-      { to: "/designations", label: "Employee Designations", icon: Briefcase },
-      { to: "/grades", label: "Employee Grades", icon: BarChart2 },
-      { to: "/employment-types", label: "Employee Status", icon: UserCheck },
     ],
   },
   {
@@ -63,6 +64,47 @@ const NAV_GROUPS = [
   // { to: '/payroll', label: 'Payroll', icon: Banknote },
   // { to: '/payroll-settings', label: 'Payroll Settings', icon: Settings },
   // ],
+  // },
+  {
+    label: "General",
+    items: [{ to: "/notifications", label: "Notifications", icon: Bell }],
+  },
+
+  {
+    label: "Recruitment (ATS)",
+    items: [
+      { to: "/ats/applications", label: "Applications", icon: Briefcase },
+      {
+        to: "/ats/pipeline/screening-interview",
+        label: "Screening & Interview",
+        icon: ClipboardCheck,
+      },
+      {
+        to: "/ats/pipeline/evaluation",
+        label: "Evaluation",
+        icon: TableProperties,
+      },
+      {
+        to: "/ats/pipeline/offer-onboarding",
+        label: "Offer & Onboarding",
+        icon: Layers,
+      },
+    ],
+  },
+  // {
+  //   label: "Recruitment (ATS)",
+  //   items: [
+  //     { to: "/ats/screening", label: "Screening", icon: ClipboardCheck },
+  //     { to: "/ats/interviews", label: "Interviews", icon: CalendarClock },
+  //     { to: "/ats/evaluation", label: "Evaluation", icon: TableProperties },
+  //     { to: "/ats/offers", label: "Offers", icon: Banknote },
+  //     { to: "/ats/pre-onboarding", label: "Pre‑Onboarding", icon: FileText },
+  //     { to: "/ats/onboarding", label: "Onboarding", icon: Users },
+  //     { to: "/ats/post-onboarding", label: "Post‑Onboarding", icon: Users },
+  //     { to: "/ats/documents", label: "Documents", icon: FileText },
+  //     { to: "/ats/audit-logs", label: "Audit Logs", icon: ScrollText },
+  //     { to: "/ats/reports", label: "Reports", icon: BarChart3 },
+  //   ],
   // },
   {
     label: "General",

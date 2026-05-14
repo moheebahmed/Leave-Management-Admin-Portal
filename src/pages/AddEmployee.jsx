@@ -13,9 +13,6 @@ const INITIAL_FORM = {
   department_id: "",
   shift_id: "",
   designation: "",
-  designation_id: "",
-  grade_id: "",
-  employment_type_id: "",
   joining_date: "",
   confirmation_date: "",
   employee_code: "",
@@ -34,12 +31,6 @@ const AddEmployee = () => {
   const [departmentsLoading, setDepartmentsLoading] = useState(true);
   const [shifts, setShifts] = useState([]);
   const [shiftsLoading, setShiftsLoading] = useState(true);
-  const [designations, setDesignations] = useState([]);
-  const [designationsLoading, setDesignationsLoading] = useState(true);
-  const [grades, setGrades] = useState([]);
-  const [gradesLoading, setGradesLoading] = useState(true);
-  const [employmentTypes, setEmploymentTypes] = useState([]);
-  const [employmentTypesLoading, setEmploymentTypesLoading] = useState(true);
 
   useEffect(() => {
     // Fetch departments
@@ -55,27 +46,6 @@ const AddEmployee = () => {
       .then((res) => setShifts(res.data?.data || res.data || []))
       .catch(() => showToast("Failed to fetch shifts"))
       .finally(() => setShiftsLoading(false));
-
-    // Fetch designations
-    axios
-      .get(`${API_BASE_URL}/designations`, { headers: getAuthHeaders() })
-      .then((res) => setDesignations(res.data.data || res.data || []))
-      .catch(() => showToast("Failed to fetch designations"))
-      .finally(() => setDesignationsLoading(false));
-
-    // Fetch grades
-    axios
-      .get(`${API_BASE_URL}/grades`, { headers: getAuthHeaders() })
-      .then((res) => setGrades(res.data.data || res.data || []))
-      .catch(() => showToast("Failed to fetch grades"))
-      .finally(() => setGradesLoading(false));
-
-    // Fetch employment types
-    axios
-      .get(`${API_BASE_URL}/employment-types`, { headers: getAuthHeaders() })
-      .then((res) => setEmploymentTypes(res.data.data || res.data || []))
-      .catch(() => showToast("Failed to fetch employment types"))
-      .finally(() => setEmploymentTypesLoading(false));
   }, []);
 
   useEffect(() => {
@@ -94,9 +64,6 @@ const AddEmployee = () => {
             department_id: emp.department_id || "",
             shift_id: emp.shift_id || "",
             designation: emp.designation || "",
-            designation_id: emp.designation_id || "",
-            grade_id: emp.grade_id || "",
-            employment_type_id: emp.employment_type_id || "",
             joining_date: emp.joining_date
               ? emp.joining_date.split("T")[0]
               : "",
@@ -123,11 +90,10 @@ const AddEmployee = () => {
     if (!isEdit && (!form.password.trim() || form.password.length < 6))
       e.password = "Password must be at least 6 characters";
     if (!form.department_id) e.department_id = "Please select a department";
-    if (!form.designation_id) e.designation_id = "Please select a designation";
+    if (!form.designation.trim()) e.designation = "Designation is required";
     if (!form.joining_date) e.joining_date = "Joining date is required";
     if (!form.confirmation_date)
       e.confirmation_date = "Confirmation date is required";
-    if (!form.shift_id) e.shift_id = "Please select a shift";
     if (!form.employee_code.trim())
       e.employee_code = "Employee code is required";
     setErrors(e);
@@ -144,14 +110,9 @@ const AddEmployee = () => {
       const selectedDept = departments.find(
         (d) => d.id === parseInt(form.department_id),
       );
-      // Get designation title from selected designation_id
-      const selectedDesignation = designations.find(
-        (d) => d.id === parseInt(form.designation_id),
-      );
       const payload = {
         ...form,
         department: selectedDept?.department_name || "",
-        designation: selectedDesignation?.title || "",
       };
 
       if (isEdit) {
@@ -296,16 +257,11 @@ const AddEmployee = () => {
               </div>
 
               {/* Role */}
-              {/* <div className="space-y-1.5">
+              <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 tracking-wide">
                   Role <span className="text-danger">*</span>
                 </label>
-                <input
-                  className={inputClass("role")}
-                  value="EMPLOYEE"
-                  readOnly
-                /> */}
-              {/* <select
+                <select
                   className={`${inputClass("role")} cursor-pointer`}
                   value={form.role}
                   onChange={(e) => set("role", e.target.value)}
@@ -317,8 +273,8 @@ const AddEmployee = () => {
                   <option value="HR" className="bg-card">
                     HR
                   </option>
-                </select> */}
-              {/* </div> */}
+                </select>
+              </div>
 
               {/* Departments */}
               <div className="space-y-1.5">
@@ -350,30 +306,21 @@ const AddEmployee = () => {
                 <label className="block text-xs font-semibold text-slate-500 tracking-wide">
                   Designation <span className="text-danger">*</span>
                 </label>
-                <select
-                  className={`${inputClass("designation_id")} cursor-pointer`}
-                  value={form.designation_id}
-                  onChange={(e) => set("designation_id", e.target.value)}
-                  disabled={designationsLoading}
-                >
-                  <option value="">
-                    {designationsLoading ? "Loading..." : "Select designation"}
-                  </option>
-                  {designations.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-card">
-                      {d.title}
-                    </option>
-                  ))}
-                </select>
-                {errors.designation_id && (
-                  <p className="text-xs text-danger">{errors.designation_id}</p>
+                <input
+                  className={inputClass("designation")}
+                  placeholder="Enter designation"
+                  value={form.designation}
+                  onChange={(e) => set("designation", e.target.value)}
+                />
+                {errors.designation && (
+                  <p className="text-xs text-danger">{errors.designation}</p>
                 )}
               </div>
 
               {/* Shift */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 tracking-wide">
-                  Shift <span className="text-danger">*</span>
+                  Shift
                 </label>
                 <select
                   className={`${inputClass("shift_id")} cursor-pointer`}
@@ -390,9 +337,6 @@ const AddEmployee = () => {
                     </option>
                   ))}
                 </select>
-                {errors.shift_id && (
-                  <p className="text-xs text-danger">{errors.shift_id}</p>
-                )}
               </div>
 
               {/* Joining Date */}
@@ -428,60 +372,6 @@ const AddEmployee = () => {
                   </p>
                 )}
               </div>
-
-              {/* Grade */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-500 tracking-wide">
-                  Employee Grade
-                </label>
-                <select
-                  className={`${inputClass("grade_id")} cursor-pointer`}
-                  value={form.grade_id}
-                  onChange={(e) => set("grade_id", e.target.value)}
-                  disabled={gradesLoading}
-                >
-                  <option value="">
-                    {gradesLoading ? "Loading..." : "Select grade"}
-                  </option>
-                  {grades.map((g) => (
-                    <option key={g.id} value={g.id} className="bg-card">
-                      {g.grade_name} ({g.grade_code})
-                    </option>
-                  ))}
-                </select>
-                {errors.grade_id && (
-                  <p className="text-xs text-danger">{errors.grade_id}</p>
-                )}
-              </div>
-
-              {/* Employment Type */}
-              <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-500 tracking-wide">
-                  Employment Status
-                </label>
-                <select
-                  className={`${inputClass("employment_type_id")} cursor-pointer`}
-                  value={form.employment_type_id}
-                  onChange={(e) => set("employment_type_id", e.target.value)}
-                  disabled={employmentTypesLoading}
-                >
-                  <option value="">
-                    {employmentTypesLoading
-                      ? "Loading..."
-                      : "Select employment status"}
-                  </option>
-                  {employmentTypes.map((t) => (
-                    <option key={t.id} value={t.id} className="bg-card">
-                      {t.type_name}
-                    </option>
-                  ))}
-                </select>
-                {errors.employment_type_id && (
-                  <p className="text-xs text-danger">
-                    {errors.employment_type_id}
-                  </p>
-                )}
-              </div>
             </div>
 
             {/* Buttons */}
@@ -498,7 +388,7 @@ const AddEmployee = () => {
               </button>
               <button
                 type="button"
-                className="flex-1 btn-outline flex justify-center items-center"
+                className="btn-outline"
                 onClick={() => navigate("/employees")}
               >
                 Cancel
