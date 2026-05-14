@@ -175,7 +175,7 @@ const Designations = () => {
               </button>
               <button
                 type="button"
-               className="flex-1 btn-outline flex justify-center items-center"
+              className=" btn-outline"
                 onClick={handleCancel}
               >
                 Cancel

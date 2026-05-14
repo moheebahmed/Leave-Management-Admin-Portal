@@ -63,7 +63,7 @@ const Login = () => {
         </div>
 
         <div className="relative z-10 text-center">
-          <div className="inline-flex items-center gap-4 mb-8">
+          <div className="inline-flex items-center gap-4 mb-5">
             <div className="w-20 h-18 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
               <img
                 src="/logo.png"
@@ -72,17 +72,17 @@ const Login = () => {
               />
             </div>
             <div className="text-left">
-              <div className="font-syne font-bold text-4xl text-white leading-tight">
-                LeaveOS
+              <div className="font-syne font-bold text-4xl text-white leading-tight mb-1">
+                RecallHRM
               </div>
               <div className="text-sm font-semibold uppercase tracking-widest text-slate-400">
-                HR LEAVE MANAGEMENT PORTAL
+                Remember Talent. Retain Excellence.
               </div>
             </div>
           </div>
           <p className="text-slate-400 text-lg max-w-md mx-auto">
-            Streamline your HR operations with our comprehensive leave
-            management system
+            RecallHRM is an intelligent HR management system designed to help organizations track,
+            nurture, and retain their most valuable asset people.
           </p>
         </div>
 
@@ -104,7 +104,7 @@ const Login = () => {
               </div>
               <div className="text-left">
                 <div className="font-syne font-bold text-2xl text-white leading-tight">
-                  LeaveOS
+                  RecallHRM
                 </div>
                 <div className="text-[10px] font-semibold uppercase tracking-widest text-slate-500">
                   HR Suite
@@ -114,16 +114,8 @@ const Login = () => {
           </div>
 
           {/* Welcome Text */}
-          <div className="login-welcome mb-8">
-            {/* Logo with Welcome */}
+          <div className="login-welcome mb-8 ">
             <div className="flex items-center gap-3 mb-3">
-              {/* <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
-                <img
-                  src="/logo.png"
-                  alt="logo"
-                  className="w-full h-full object-contain"
-                />
-              </div> */}
               <h1 className="font-syne text-4xl font-bold text-white">
                 Welcome
               </h1>

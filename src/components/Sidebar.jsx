@@ -102,7 +102,7 @@ const Sidebar = ({ collapsed, onClose }) => {
             className={`transition-opacity duration-200 ${collapsed ? "opacity-0 pointer-events-none w-0" : "opacity-100"}`}
           >
             <div className="font-syne font-bold text-sm text-slate-100 whitespace-nowrap leading-tight">
-              LeaveOS
+              RecallHRM
             </div>
             <div className="text-[9px] font-semibold uppercase tracking-widest text-slate-500">
               HR Suite

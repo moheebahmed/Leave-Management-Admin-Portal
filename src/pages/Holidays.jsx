@@ -188,7 +188,7 @@ const Holidays = () => {
           </div>
 
           <div className="flex gap-2 justify-end pt-1">
-            <button className="flex-1 btn-outline flex justify-center items-center" onClick={handleCancel}>Cancel</button>
+            <button className=" btn-outline" onClick={handleCancel}>Cancel</button>
             <button className="btn-primary" onClick={handleAdd}>
               <Plus size={13} /> {editId ? "Update Holiday" : "Save Holiday"}
             </button>
