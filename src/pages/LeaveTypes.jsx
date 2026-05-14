@@ -51,9 +51,9 @@ const LeaveTypes = () => {
     if (!form.name.trim()) e.name = "Name is required";
     if (!form.code.trim()) e.code = "Code is required";
     if (form.min_notice_days === "" || isNaN(form.min_notice_days))
-      e.min_notice_days = "Min Days is Required";
+      e.min_notice_days = "Required";
     if (form.max_allowed_leaves === "" || isNaN(form.max_allowed_leaves))
-      e.max_allowed_leaves = "Maximum Leaves is Required";
+      e.max_allowed_leaves = "Required";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -248,7 +248,7 @@ const LeaveTypes = () => {
 
               <button
                 type="button"
-               className="flex-1 btn-outline flex justify-center items-center"
+                className="btn-outline"
                 onClick={handleCancel}
               >
                 Cancel

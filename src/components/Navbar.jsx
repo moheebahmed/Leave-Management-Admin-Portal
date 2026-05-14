@@ -10,6 +10,17 @@ const PAGE_TITLES = {
   '/add-employee': 'Add New Employee',
   '/leave-balance': 'Leave Balance',
   '/add-leave': 'Add Leave Balance',
+  '/ats/applications': 'ATS — Applications',
+  '/ats/screening': 'ATS — Screening',
+  '/ats/interviews': 'ATS — Interviews',
+  '/ats/evaluation': 'ATS — Evaluation',
+  '/ats/offers': 'ATS — Offers',
+  '/ats/pre-onboarding': 'ATS — Pre‑Onboarding',
+  '/ats/onboarding': 'ATS — Onboarding',
+  '/ats/post-onboarding': 'ATS — Post‑Onboarding',
+  '/ats/documents': 'ATS — Documents',
+  '/ats/audit-logs': 'ATS — Audit Logs',
+  '/ats/reports': 'ATS — Reports',
 }
 
 const Navbar = ({ toggleSidebar }) => {

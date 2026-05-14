@@ -4,7 +4,6 @@ import axios from "axios";
 import { API_BASE_URL, getAuthHeaders } from "../api/config";
 import { TableWrapper, EmptyState } from "../components/Table";
 import { useApp } from "../layouts/DashboardLayout";
-import ConfirmModal from "../components/ConfirmModal";
 
 const EMPTY_FORM = { title: "", date: "", is_paid: true };
 
@@ -16,7 +15,6 @@ const Holidays = () => {
   const [editId, setEditId] = useState(null);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(true);
-  const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
     fetchHolidays();
@@ -82,18 +80,13 @@ const Holidays = () => {
     setErrors({});
   };
 
-  const handleDelete = (id, title) => {
-    setDeleteTarget({ id, name: title });
-  };
-
-  const confirmDelete = async () => {
-    const { id, name } = deleteTarget;
-    setDeleteTarget(null);
+  const handleDelete = async (id, title) => {
+    if (!window.confirm(`Delete "${title}"?`)) return;
     try {
       await axios.delete(`${API_BASE_URL}/holidays/${id}`, {
         headers: getAuthHeaders(),
       });
-      showToast(`"${name}" deleted`);
+      showToast(`"${title}" deleted`);
       fetchHolidays();
     } catch {
       showToast("Failed to delete holiday");
@@ -140,6 +133,7 @@ const Holidays = () => {
             {editId ? "Edit Holiday" : "New Holiday"}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Title */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest">
                 Holiday Name
@@ -155,6 +149,7 @@ const Holidays = () => {
               )}
             </div>
 
+            {/* Date */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest">
                 Date
@@ -170,6 +165,7 @@ const Holidays = () => {
               )}
             </div>
 
+            {/* Is Paid */}
             <div className="flex flex-col gap-1.5">
               <label className="text-[10px] text-slate-500 font-semibold uppercase tracking-widest">
                 Type
@@ -181,14 +177,20 @@ const Holidays = () => {
                 }
                 className="form-input-base cursor-pointer"
               >
-                <option value="true" className="bg-card">Paid</option>
-                <option value="false" className="bg-card">Unpaid</option>
+                <option value="true" className="bg-card">
+                  Paid
+                </option>
+                <option value="false" className="bg-card">
+                  Unpaid
+                </option>
               </select>
             </div>
           </div>
 
           <div className="flex gap-2 justify-end pt-1">
-            <button className="flex-1 btn-outline flex justify-center items-center" onClick={handleCancel}>Cancel</button>
+            <button className="btn-outline" onClick={handleCancel}>
+              Cancel
+            </button>
             <button className="btn-primary" onClick={handleAdd}>
               <Plus size={13} /> {editId ? "Update Holiday" : "Save Holiday"}
             </button>
@@ -199,7 +201,9 @@ const Holidays = () => {
       {/* Table */}
       <TableWrapper title="All Holidays">
         {loading ? (
-          <div className="text-center text-slate-500 py-8 text-sm">Loading...</div>
+          <div className="text-center text-slate-500 py-8 text-sm">
+            Loading...
+          </div>
         ) : holidays.length === 0 ? (
           <EmptyState message="No holidays added yet." />
         ) : (
@@ -207,45 +211,81 @@ const Holidays = () => {
             <table className="w-full min-w-[480px]">
               <thead>
                 <tr className="bg-[#000000]">
-                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">#</th>
-                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">Holiday Name</th>
-                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">Date</th>
-                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap hidden sm:table-cell">Day</th>
-                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">Type</th>
-                  <th className="table-th font-semibold text-[rgb(173,173,173)] text-center whitespace-nowrap">Actions</th>
+                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">
+                    #
+                  </th>
+                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">
+                    Holiday Name
+                  </th>
+                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">
+                    Date
+                  </th>
+                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap hidden sm:table-cell">
+                    Day
+                  </th>
+                  <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">
+                    Type
+                  </th>
+                  <th className="table-th font-semibold text-[rgb(173,173,173)] text-center whitespace-nowrap">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {holidays
                   .sort((a, b) => new Date(a.date) - new Date(b.date))
                   .map((h, i) => (
-                    <tr key={h.id} className="table-row-hover last:[&>td]:border-0">
-                      <td className="table-td text-slate-500 text-xs">{i + 1}</td>
+                    <tr
+                      key={h.id}
+                      className="table-row-hover last:[&>td]:border-0"
+                    >
+                      <td className="table-td text-slate-500 text-xs">
+                        {i + 1}
+                      </td>
                       <td className="table-td">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-lg bg-amber/10 border border-amber/20 flex items-center justify-center shrink-0">
                             <CalendarDays size={13} className="text-amber" />
                           </div>
-                          <span className="font-medium text-slate-200 text-[13px] whitespace-nowrap">{h.title}</span>
+                          <span className="font-medium text-slate-200 text-[13px] whitespace-nowrap">
+                            {h.title}
+                          </span>
                         </div>
                       </td>
-                      <td className="table-td text-slate-300 text-xs whitespace-nowrap">{formatDate(h.date)}</td>
+                      <td className="table-td text-slate-300 text-xs whitespace-nowrap">
+                        {formatDate(h.date)}
+                      </td>
                       <td className="table-td hidden sm:table-cell">
                         <span className="text-xs px-2 py-0.5 rounded-full bg-amber/10 text-amber border border-amber/20 whitespace-nowrap">
-                          {new Date(h.date).toLocaleDateString("en-PK", { weekday: "long" })}
+                          {new Date(h.date).toLocaleDateString("en-PK", {
+                            weekday: "long",
+                          })}
                         </span>
                       </td>
                       <td className="table-td whitespace-nowrap">
-                        <span className={`text-xs px-2 py-0.5 rounded-full border font-semibold ${h.is_paid ? "bg-emerald/10 text-emerald border-emerald/20" : "bg-slate-700/30 text-slate-400 border-slate-600/30"}`}>
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full border font-semibold
+                        ${
+                          h.is_paid
+                            ? "bg-emerald/10 text-emerald border-emerald/20"
+                            : "bg-slate-700/30 text-slate-400 border-slate-600/30"
+                        }`}
+                        >
                           {h.is_paid ? "Paid" : "Unpaid"}
                         </span>
                       </td>
                       <td className="table-td text-center">
                         <div className="flex items-center justify-center gap-2">
-                          <button onClick={() => handleEdit(h)} className="btn-ghost hover:!bg-accent/10 hover:!text-accent hover:!border-accent/30">
+                          <button
+                            onClick={() => handleEdit(h)}
+                            className="btn-ghost hover:!bg-accent/10 hover:!text-accent hover:!border-accent/30"
+                          >
                             <Pencil size={13} />
                           </button>
-                          <button onClick={() => handleDelete(h.id, h.title)} className="btn-ghost hover:!bg-danger/10 hover:!text-danger hover:!border-danger/30">
+                          <button
+                            onClick={() => handleDelete(h.id, h.title)}
+                            className="btn-ghost hover:!bg-danger/10 hover:!text-danger hover:!border-danger/30"
+                          >
                             <Trash2 size={13} />
                           </button>
                         </div>
@@ -257,13 +297,6 @@ const Holidays = () => {
           </div>
         )}
       </TableWrapper>
-
-      <ConfirmModal
-        target={deleteTarget}
-        onConfirm={confirmDelete}
-        onCancel={() => setDeleteTarget(null)}
-        entityLabel="Holiday"
-      />
     </div>
   );
 };

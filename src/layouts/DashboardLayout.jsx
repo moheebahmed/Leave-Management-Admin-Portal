@@ -8,6 +8,7 @@ import { useToast } from '../hooks/useToast'
 // Context to share toast and data across pages
 import { createContext, useContext } from 'react'
 import { INITIAL_EMPLOYEES, INITIAL_LEAVE_BALANCES } from '../data/initialData'
+import { INITIAL_ATS_AUDIT_LOGS, INITIAL_ATS_CANDIDATES } from '../data/atsInitialData'
 
 export const AppContext = createContext(null)
 export const useApp = () => useContext(AppContext)
@@ -18,10 +19,26 @@ const DashboardLayout = () => {
   const [employees, setEmployees] = useState(INITIAL_EMPLOYEES)
   const [leaveBalances, setLeaveBalances] = useState(INITIAL_LEAVE_BALANCES)
   const [attendanceRecords, setAttendanceRecords] = useState([])
+  const [atsCandidates, setAtsCandidates] = useState(INITIAL_ATS_CANDIDATES)
+  const [atsAuditLogs, setAtsAuditLogs] = useState(INITIAL_ATS_AUDIT_LOGS)
   const { toast, showToast, hideToast } = useToast()
 
   return (
-    <AppContext.Provider value={{ employees, setEmployees, leaveBalances, setLeaveBalances, attendanceRecords, setAttendanceRecords, showToast }}>
+    <AppContext.Provider
+      value={{
+        employees,
+        setEmployees,
+        leaveBalances,
+        setLeaveBalances,
+        attendanceRecords,
+        setAttendanceRecords,
+        atsCandidates,
+        setAtsCandidates,
+        atsAuditLogs,
+        setAtsAuditLogs,
+        showToast,
+      }}
+    >
       <div className="flex h-screen overflow-hidden app-bg" style={{ height: '100dvh' }}>
 
         {/* Mobile overlay */}
@@ -52,7 +69,7 @@ const DashboardLayout = () => {
             }}
           />
 
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-transparent">
+          <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-transparent relative">
             <Outlet />
           </main>
         </div>
