@@ -202,7 +202,7 @@ const Shifts = () => {
           </div>
 
           <div className="flex gap-2 justify-end pt-1">
-            <button className="flex-1 btn-outline flex justify-center items-center" onClick={handleCancel}>
+            <button className=" btn-outline" onClick={handleCancel}>
               Cancel
             </button>
             <button className="btn-primary" onClick={handleSave}>

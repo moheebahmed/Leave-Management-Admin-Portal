@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { UserPlus, Save, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useApp } from "../layouts/DashboardLayout";
@@ -21,6 +21,88 @@ const INITIAL_FORM = {
   employee_code: "",
 };
 
+// ─── Reusable ComboSelect ───────────────────────────────────────────────────
+const ComboSelect = ({
+  options,
+  value,
+  onChange,
+  placeholder,
+  disabled,
+  labelKey = "label",
+  valueKey = "value",
+}) => {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const filtered = options.filter((o) =>
+    o[labelKey]?.toLowerCase().includes(query.toLowerCase()),
+  );
+
+  const displayValue = () => {
+    if (query !== "") return query;
+    const found = options.find((o) => String(o[valueKey]) === String(value));
+    return found ? found[labelKey] : value || "";
+  };
+
+  return (
+    <div ref={ref} className="relative">
+      <input
+        className="form-input-base w-full"
+        placeholder={disabled ? "Loading..." : placeholder}
+        disabled={disabled}
+        value={displayValue()}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          onChange(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => {
+          setQuery("");
+          setOpen(true);
+        }}
+        autoComplete="off"
+      />
+      {open && !disabled && (
+        <div className="absolute z-50 top-full mt-1 w-full bg-[#1a1a1a] border border-border rounded-lg shadow-xl max-h-48 overflow-y-auto">
+          {filtered.length === 0 ? (
+            <div className="px-3 py-2 text-xs text-slate-500">
+              No match — your typed value will be used
+            </div>
+          ) : (
+            filtered.map((o) => (
+              <div
+                key={o[valueKey]}
+                onClick={() => {
+                  onChange(o[valueKey]);
+                  setQuery("");
+                  setOpen(false);
+                }}
+                className={`px-3 py-2 text-xs cursor-pointer transition-colors
+                  ${String(o[valueKey]) === String(value)
+                    ? "bg-accent/10 text-accent font-semibold"
+                    : "text-slate-300 hover:bg-white/5"
+                  }`}
+              >
+                {o[labelKey]}
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+// ───────────────────────────────────────────────────────────────────────────
+
 const AddEmployee = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -42,35 +124,30 @@ const AddEmployee = () => {
   const [employmentTypesLoading, setEmploymentTypesLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch departments
     axios
       .get(`${API_BASE_URL}/departments`, { headers: getAuthHeaders() })
       .then((res) => setDepartments(res.data.data || []))
       .catch(() => showToast("Failed to fetch departments"))
       .finally(() => setDepartmentsLoading(false));
 
-    // Fetch shifts
     axios
       .get(`${API_BASE_URL}/shifts`, { headers: getAuthHeaders() })
       .then((res) => setShifts(res.data?.data || res.data || []))
       .catch(() => showToast("Failed to fetch shifts"))
       .finally(() => setShiftsLoading(false));
 
-    // Fetch designations
     axios
       .get(`${API_BASE_URL}/designations`, { headers: getAuthHeaders() })
       .then((res) => setDesignations(res.data.data || res.data || []))
       .catch(() => showToast("Failed to fetch designations"))
       .finally(() => setDesignationsLoading(false));
 
-    // Fetch grades
     axios
       .get(`${API_BASE_URL}/grades`, { headers: getAuthHeaders() })
       .then((res) => setGrades(res.data.data || res.data || []))
       .catch(() => showToast("Failed to fetch grades"))
       .finally(() => setGradesLoading(false));
 
-    // Fetch employment types
     axios
       .get(`${API_BASE_URL}/employment-types`, { headers: getAuthHeaders() })
       .then((res) => setEmploymentTypes(res.data.data || res.data || []))
@@ -140,18 +217,61 @@ const AddEmployee = () => {
 
     setLoading(true);
     try {
-      // Get department name from selected department_id
+      // ── Resolve designation_id ──────────────────────────────────────────
+      // If the value is not a numeric ID (user typed a custom name), create it first
+      let resolvedDesignationId = form.designation_id;
+      const isDesignationId = designations.some(
+        (d) => String(d.id) === String(form.designation_id),
+      );
+      if (!isDesignationId && form.designation_id) {
+        const res = await axios.post(
+          `${API_BASE_URL}/designations`,
+          { title: form.designation_id },
+          { headers: getAuthHeaders() },
+        );
+        resolvedDesignationId =
+          res.data.data?.id || res.data.id || res.data?.designation?.id;
+        // Refresh local designations list so it stays in sync
+        setDesignations((prev) => [
+          ...prev,
+          { id: resolvedDesignationId, title: form.designation_id },
+        ]);
+      }
+
+      // ── Resolve employment_type_id ──────────────────────────────────────
+      // Same logic for employment type
+      let resolvedEmploymentTypeId = form.employment_type_id;
+      const isEmploymentTypeId = employmentTypes.some(
+        (t) => String(t.id) === String(form.employment_type_id),
+      );
+      if (!isEmploymentTypeId && form.employment_type_id) {
+        const res = await axios.post(
+          `${API_BASE_URL}/employment-types`,
+          { type_name: form.employment_type_id },
+          { headers: getAuthHeaders() },
+        );
+        resolvedEmploymentTypeId =
+          res.data.data?.id || res.data.id || res.data?.employmentType?.id;
+        // Refresh local employment types list so it stays in sync
+        setEmploymentTypes((prev) => [
+          ...prev,
+          { id: resolvedEmploymentTypeId, type_name: form.employment_type_id },
+        ]);
+      }
+
+      // ── Build final payload ─────────────────────────────────────────────
       const selectedDept = departments.find(
         (d) => d.id === parseInt(form.department_id),
       );
-      // Get designation title from selected designation_id
       const selectedDesignation = designations.find(
-        (d) => d.id === parseInt(form.designation_id),
+        (d) => String(d.id) === String(resolvedDesignationId),
       );
       const payload = {
         ...form,
+        designation_id: resolvedDesignationId,
+        employment_type_id: resolvedEmploymentTypeId,
         department: selectedDept?.department_name || "",
-        designation: selectedDesignation?.title || "",
+        designation: selectedDesignation?.title || form.designation_id || "",
       };
 
       if (isEdit) {
@@ -251,7 +371,7 @@ const AddEmployee = () => {
                 )}
               </div>
 
-              {/* Password - hide in edit mode */}
+              {/* Password */}
               {!isEdit && (
                 <div className="space-y-1.5">
                   <label className="block text-xs font-semibold text-slate-500 tracking-wide">
@@ -295,32 +415,7 @@ const AddEmployee = () => {
                 )}
               </div>
 
-              {/* Role */}
-              {/* <div className="space-y-1.5">
-                <label className="block text-xs font-semibold text-slate-500 tracking-wide">
-                  Role <span className="text-danger">*</span>
-                </label>
-                <input
-                  className={inputClass("role")}
-                  value="EMPLOYEE"
-                  readOnly
-                /> */}
-              {/* <select
-                  className={`${inputClass("role")} cursor-pointer`}
-                  value={form.role}
-                  onChange={(e) => set("role", e.target.value)}
-                >
-                  <option value="">Select role</option>
-                  <option value="EMPLOYEE" className="bg-card">
-                    EMPLOYEE
-                  </option>
-                  <option value="HR" className="bg-card">
-                    HR
-                  </option>
-                </select> */}
-              {/* </div> */}
-
-              {/* Departments */}
+              {/* Department */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 tracking-wide">
                   Department <span className="text-danger">*</span>
@@ -345,26 +440,21 @@ const AddEmployee = () => {
                 )}
               </div>
 
-              {/* Designation */}
+              {/* Designation — ComboSelect */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 tracking-wide">
                   Designation <span className="text-danger">*</span>
                 </label>
-                <select
-                  className={`${inputClass("designation_id")} cursor-pointer`}
+                <ComboSelect
+                  options={designations.map((d) => ({
+                    label: d.title,
+                    value: d.id,
+                  }))}
                   value={form.designation_id}
-                  onChange={(e) => set("designation_id", e.target.value)}
+                  onChange={(val) => set("designation_id", val)}
+                  placeholder="Select or type designation"
                   disabled={designationsLoading}
-                >
-                  <option value="">
-                    {designationsLoading ? "Loading..." : "Select designation"}
-                  </option>
-                  {designations.map((d) => (
-                    <option key={d.id} value={d.id} className="bg-card">
-                      {d.title}
-                    </option>
-                  ))}
-                </select>
+                />
                 {errors.designation_id && (
                   <p className="text-xs text-danger">{errors.designation_id}</p>
                 )}
@@ -454,28 +544,21 @@ const AddEmployee = () => {
                 )}
               </div>
 
-              {/* Employment Type */}
+              {/* Employment Type — ComboSelect */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-semibold text-slate-500 tracking-wide">
                   Employment Status
                 </label>
-                <select
-                  className={`${inputClass("employment_type_id")} cursor-pointer`}
+                <ComboSelect
+                  options={employmentTypes.map((t) => ({
+                    label: t.type_name,
+                    value: t.id,
+                  }))}
                   value={form.employment_type_id}
-                  onChange={(e) => set("employment_type_id", e.target.value)}
+                  onChange={(val) => set("employment_type_id", val)}
+                  placeholder="Select or type status"
                   disabled={employmentTypesLoading}
-                >
-                  <option value="">
-                    {employmentTypesLoading
-                      ? "Loading..."
-                      : "Select employment status"}
-                  </option>
-                  {employmentTypes.map((t) => (
-                    <option key={t.id} value={t.id} className="bg-card">
-                      {t.type_name}
-                    </option>
-                  ))}
-                </select>
+                />
                 {errors.employment_type_id && (
                   <p className="text-xs text-danger">
                     {errors.employment_type_id}
@@ -498,7 +581,7 @@ const AddEmployee = () => {
               </button>
               <button
                 type="button"
-                className="flex-1 btn-outline flex justify-center items-center"
+                className="btn-outline"
                 onClick={() => navigate("/employees")}
               >
                 Cancel
