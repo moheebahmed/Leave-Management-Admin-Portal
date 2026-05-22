@@ -69,28 +69,27 @@ const StatusBadge = ({ status, onStatusChange, isLeadApproval, request, leaveBal
       >
         {allStatuses.map((s) => {
           const isDisabled = s === "APPROVED" && !isLeadApproval;
-          
-          // Check balance for APPROVED status
+
           let hasInsufficientBalance = false;
           let balanceInfo = null;
-          
+
           if (s === "APPROVED" && leaveBalances && request) {
             console.log("Checking balance for request:", request.Employee?.id, request.LeaveType?.id, request.total_days);
             console.log("Available balances:", leaveBalances);
-            
+
             const employeeBalance = leaveBalances.find(
               (b) => b.empId === request.Employee?.id
             );
-            
+
             console.log("Employee balance found:", employeeBalance);
-            
+
             if (employeeBalance && employeeBalance.balances) {
               const leaveTypeBalance = employeeBalance.balances.find(
                 (b) => b.LeaveType?.id === request.LeaveType?.id || b.leave_type_id === request.LeaveType?.id
               );
-              
+
               console.log("Leave type balance found:", leaveTypeBalance);
-              
+
               if (leaveTypeBalance) {
                 balanceInfo = leaveTypeBalance;
                 const remaining = leaveTypeBalance.remaining || (leaveTypeBalance.total_allowed - leaveTypeBalance.used);
@@ -107,10 +106,9 @@ const StatusBadge = ({ status, onStatusChange, isLeadApproval, request, leaveBal
               key={s}
               className={`text-xs px-3 py-2 flex items-center gap-2 transition-colors ${colors[s]} 
                 ${s === status ? "opacity-100 font-semibold" : "opacity-70"}
-                ${
-                  isDisabled || hasInsufficientBalance
-                    ? "opacity-30 cursor-not-allowed"
-                    : "cursor-pointer hover:bg-white/5"
+                ${isDisabled || hasInsufficientBalance
+                  ? "opacity-30 cursor-not-allowed"
+                  : "cursor-pointer hover:bg-white/5"
                 }`}
               onClick={(e) => {
                 e.stopPropagation();
@@ -159,18 +157,18 @@ const FeedbackModal = ({ request, onClose, onSave, leaveBalances }) => {
 
   const handleSave = async (status) => {
     setSaving(true);
-    
+
     // Check leave balance if approving
     if (status === "APPROVED" && leaveBalances) {
       const employeeBalance = leaveBalances.find(
         (b) => b.empId === request.Employee?.id
       );
-      
+
       if (employeeBalance && employeeBalance.balances) {
         const leaveTypeBalance = employeeBalance.balances.find(
           (b) => b.LeaveType?.id === request.LeaveType?.id || b.leave_type_id === request.LeaveType?.id
         );
-        
+
         if (leaveTypeBalance) {
           const remaining = leaveTypeBalance.remaining || (leaveTypeBalance.total_allowed - leaveTypeBalance.used);
           if (remaining < request.total_days) {
@@ -183,7 +181,7 @@ const FeedbackModal = ({ request, onClose, onSave, leaveBalances }) => {
         }
       }
     }
-    
+
     await onSave(request.id, { feedback, status });
     setSaving(false);
     onClose();
@@ -203,9 +201,7 @@ const FeedbackModal = ({ request, onClose, onSave, leaveBalances }) => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-white font-semibold text-[15px]">
-              Update Feedback
-            </h3>
+            <h3 className="text-white font-semibold text-[15px]">Update Feedback</h3>
             <p className="text-slate-500 text-xs mt-0.5">
               Request #{request.id} — {request.Employee?.full_name}
             </p>
@@ -227,13 +223,12 @@ const FeedbackModal = ({ request, onClose, onSave, leaveBalances }) => {
           <div className="flex justify-between text-xs">
             <span className="text-slate-500">Status</span>
             <span
-              className={`font-semibold ${
-                request.status === "APPROVED"
-                  ? "text-emerald"
-                  : request.status === "REJECTED"
-                    ? "text-red-400"
-                    : "text-yellow-400"
-              }`}
+              className={`font-semibold ${request.status === "APPROVED"
+                ? "text-emerald"
+                : request.status === "REJECTED"
+                  ? "text-red-400"
+                  : "text-yellow-400"
+                }`}
             >
               {request.status}
             </span>
@@ -424,12 +419,11 @@ const LeaveRequests = () => {
       setRequests((prev) =>
         prev.map((r) => (r.id === id ? { ...r, status: newStatus } : r)),
       );
-      
-      // Refresh leave balances after status change
+
       if (newStatus === "APPROVED" || newStatus === "REJECTED") {
         await fetchLeaveBalances();
       }
-      
+
       showToast(`Status updated to ${newStatus}`);
     } catch (error) {
       showToast(error.response?.data?.message || "Failed to update status");
@@ -455,12 +449,11 @@ const LeaveRequests = () => {
           r.id === id ? { ...r, feedback, ...(status && { status }) } : r,
         ),
       );
-      
-      // Refresh leave balances after status change
+
       if (status === "APPROVED" || status === "REJECTED") {
         await fetchLeaveBalances();
       }
-      
+
       showToast("Saved successfully ");
     } catch (error) {
       showToast(error.response?.data?.message || "Failed to save");
@@ -514,13 +507,6 @@ const LeaveRequests = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          {/* <button
-            className="btn-primary self-start sm:self-auto"
-            onClick={() => navigate('/create-leave-request')}
-          >
-            <Plus size={14} />
-            Create Request
-          </button> */}
           {selectedRows.length > 0 && (
             <button
               className="btn-ghost hover:!bg-danger/10 hover:!text-danger"
@@ -638,14 +624,6 @@ const LeaveRequests = () => {
                         )}
                       </td>
                     )}
-
-                    {/* ID */}
-                    {/* <td className="table-td">
-                      <span className="font-mono text-xs text-slate-400 bg-surface/70 px-2 py-0.5 rounded border border-border">
-                        {req.id}
-                      </span>
-                    </td> */}
-
                     {/* Leave Type */}
                     <td className="table-td whitespace-nowrap">
                       <span className="text-xs px-2 py-0.5 rounded-full bg-cyan/10 text-cyan border border-cyan/20">
@@ -720,16 +698,14 @@ const LeaveRequests = () => {
                         onClick={() =>
                           handleLeadApprovalToggle(req.id, req.isLeadApproval)
                         }
-                        className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${
-                          req.isLeadApproval ? "bg-accent" : "bg-slate-700"
-                        }`}
+                        className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${req.isLeadApproval ? "bg-accent" : "bg-slate-700"
+                          }`}
                       >
                         <span
-                          className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${
-                            req.isLeadApproval
-                              ? "translate-x-5"
-                              : "translate-x-0"
-                          }`}
+                          className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-200 ${req.isLeadApproval
+                            ? "translate-x-5"
+                            : "translate-x-0"
+                            }`}
                         />
                       </button>
                     </td>
