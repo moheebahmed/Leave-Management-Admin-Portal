@@ -12,7 +12,7 @@ import AddLeaveBalance from "./pages/AddLeaveBalance";
 import LeaveTypes from "./pages/LeaveTypes";
 import Login from "./pages/Login";
 import Notifications from "./pages/Notifications";
-import CreateLeaveRequest from "./pages/CreateLeaveRequest";
+// import CreateLeaveRequest from "./pages/CreateLeaveRequest";                         
 import ProtectedRoute from "./components/ProtectedRoute";
 import AttendanceUpload from "./pages/AttendanceUpload";
 import AttendanceRecords from "./pages/AttendanceRecords";
@@ -70,7 +70,7 @@ const App = () => {
         <Route path="add-department" element={<AddDepartment />} />
         <Route path="edit-department/:id" element={<AddDepartment />} />
         <Route path="leave-requests" element={<LeaveRequests />} />
-        <Route path="create-leave-request" element={<CreateLeaveRequest />} />
+        {/* <Route path="create-leave-request" element={<CreateLeaveRequest />} /> */}
         <Route path="leave-balance" element={<LeaveBalance />} />
         <Route path="add-leave" element={<AddLeaveBalance />} />
         <Route path="edit-leave/:empId" element={<AddLeaveBalance />} />

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "plex": {
+      "command": "plex",
+      "args": [
+        "mcp",
+        "."
+      ],
+      "cwd": "c:\\Users\\dev\\Desktop\\leave-management-admin-portal"
+    }
+  }
+}
