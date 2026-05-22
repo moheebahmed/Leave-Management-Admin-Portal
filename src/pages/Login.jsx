@@ -65,15 +65,11 @@ const Login = () => {
         <div className="relative z-10 text-center">
           <div className="inline-flex items-center gap-4 mb-5">
             <div className="w-20 h-18 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
-              <img
-                src="/logo.png"
-                alt="logo"
-                className="w-full h-full object-contain"
-              />
+              <a href="#"><img src="/logo.png" className="w-full h-full object-contain" /></a>
             </div>
             <div className="text-left">
               <div className="font-syne font-bold text-4xl text-white leading-tight mb-1">
-                RecallHRM
+                <a href="#">RecallHRM</a>
               </div>
               <div className="text-sm font-semibold uppercase tracking-widest text-slate-400">
                 Remember Talent. Retain Excellence.
@@ -116,14 +112,10 @@ const Login = () => {
           {/* Welcome Text */}
           <div className="login-welcome mb-8 ">
             <div className="flex items-center gap-3 mb-3">
-              <h1 className="font-syne text-4xl font-bold text-white">
-                Welcome
-              </h1>
+              <h1 className="font-syne text-4xl font-bold text-white">Welcome </h1>
             </div>
 
-            <p className="text-slate-300 text-sm uppercase tracking-wider">
-              Please login to Admin Dashboard
-            </p>
+            <p className="text-slate-300 text-sm uppercase tracking-wider">  Please login to Admin Dashboard  </p>
           </div>
 
           {/* Login Form */}

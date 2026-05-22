@@ -137,7 +137,7 @@ const Designations = () => {
 
       {/* Form */}
       {showForm && (
-        <div className="card-base p-5 max-w-2xl">
+        <div className="card-base p-4 sm:p-5 max-w-2xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="section-title">
               {editId ? "Edit Designation" : "New Designation"}

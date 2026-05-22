@@ -13,7 +13,6 @@ const PayrollSettings = () => {
   const [saved, setSaved] = useState(false);
   const [fetching, setFetching] = useState(true);
 
-  // Load settings from API on mount
   useEffect(() => {
     loadSettings();
   }, []);
@@ -35,7 +34,6 @@ const PayrollSettings = () => {
           });
         }
       } else {
-        // Fallback to localStorage
         const saved = localStorage.getItem("payroll_settings");
         if (saved) {
           const parsed = JSON.parse(saved);
@@ -47,7 +45,6 @@ const PayrollSettings = () => {
       }
     } catch (err) {
       console.error("Load settings error:", err);
-      // Fallback to localStorage
       const saved = localStorage.getItem("payroll_settings");
       if (saved) {
         const parsed = JSON.parse(saved);
@@ -74,7 +71,6 @@ const PayrollSettings = () => {
     try {
       const headers = getAuthHeaders();
 
-      // Save to API
       const res = await fetch(`${API_BASE_URL}/settings/payroll`, {
         method: "PUT",
         headers: { ...headers, "Content-Type": "application/json" },
@@ -87,7 +83,6 @@ const PayrollSettings = () => {
       if (res.ok) {
         const json = await res.json();
         if (json.success) {
-          // Also save to localStorage as backup
           localStorage.setItem("payroll_settings", JSON.stringify(settings));
           setSaved(true);
           showToast("Payroll settings saved successfully", "success");
@@ -96,7 +91,6 @@ const PayrollSettings = () => {
           showToast(json.message || "Failed to save settings", "error");
         }
       } else {
-        // Fallback: save to localStorage only
         localStorage.setItem("payroll_settings", JSON.stringify(settings));
         setSaved(true);
         showToast("Settings saved locally (API unavailable)", "info");
@@ -104,7 +98,6 @@ const PayrollSettings = () => {
       }
     } catch (err) {
       console.error("Save error:", err);
-      // Fallback: save to localStorage
       localStorage.setItem("payroll_settings", JSON.stringify(settings));
       setSaved(true);
       showToast("Settings saved locally", "info");
@@ -135,9 +128,7 @@ const PayrollSettings = () => {
         </div>
       ) : (
         <>
-          {/* Settings Card */}
           <div className="card-base space-y-6 p-6">
-            {/* Payroll Period */}
             <div className="space-y-4">
               <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
                 <Calendar size={16} className="text-accent" />
@@ -165,11 +156,8 @@ const PayrollSettings = () => {
                   </p>
                 </div>
 
-                {/* End Day */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-2">
-                    End Day of Month
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-400 mb-2">  End Day of Month  </label>
                   <input
                     type="number"
                     min="1"
@@ -208,7 +196,7 @@ const PayrollSettings = () => {
               </button>
               {saved && (
                 <span className="text-xs text-emerald font-semibold">
-                  ✓ Settings saved
+                  Settings saved
                 </span>
               )}
             </div>
