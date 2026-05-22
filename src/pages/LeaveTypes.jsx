@@ -9,7 +9,7 @@ const INITIAL_FORM = {
   name: "",
   code: "",
   min_notice_days: "",
-  allow_past_dates: "",
+  allow_past_dates: false,
   max_allowed_leaves: "",
 };
 
@@ -22,6 +22,7 @@ const LeaveTypes = () => {
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
   const [editId, setEditId] = useState(null);
+  const [enforceMap, setEnforceMap] = useState({});
 
   useEffect(() => {
     fetchLeaveTypes();
@@ -30,10 +31,14 @@ const LeaveTypes = () => {
   const fetchLeaveTypes = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${API_BASE_URL}/employees/leave/types`, {
+      const res = await axios.get(`${API_BASE_URL}/hr/leave/types`, {
         headers: getAuthHeaders(),
       });
-      setLeaveTypes(res.data.data.leave_types || []);
+      const types = res.data.data.leave_types || [];
+      setLeaveTypes(types);
+      const map = {};
+      types.forEach((t) => { map[t.id] = t.enforce_balance ?? false; });
+      setEnforceMap(map);
     } catch {
       showToast("Failed to fetch leave types");
     } finally {
@@ -99,6 +104,7 @@ const LeaveTypes = () => {
       min_notice_days: lt.min_notice_days,
       allow_past_dates: lt.allow_past_dates,
       max_allowed_leaves: lt.max_allowed_leaves,
+      enforce_balance: lt.enforce_balance,
     });
     setEditId(lt.id);
     setShowForm(true);
@@ -113,6 +119,30 @@ const LeaveTypes = () => {
       showToast("Leave type deleted.");
     } catch {
       showToast("Failed to delete leave type");
+    }
+  };
+
+  const handleToggleEnforce = async (lt) => {
+    const current = enforceMap[lt.id] ?? false;
+    const newVal = !current;
+    // optimistic update
+    setEnforceMap((prev) => ({ ...prev, [lt.id]: newVal }));
+    try {
+      await axios.put(
+        `${API_BASE_URL}/hr/leave/types/${lt.id}`,
+        {
+          name: lt.name,
+          code: lt.code,
+          min_notice_days: lt.min_notice_days,
+          max_allowed_leaves: lt.max_allowed_leaves,
+          allow_past_dates: newVal,
+          enforce_balance: newVal,
+        },
+        { headers: getAuthHeaders() }
+      );
+    } catch {
+      setEnforceMap((prev) => ({ ...prev, [lt.id]: current }));
+      showToast("Failed to update enforce balance");
     }
   };
 
@@ -152,7 +182,7 @@ const LeaveTypes = () => {
 
       {/* Form */}
       {showForm && (
-        <div className="card-base p-5 max-w-2xl">
+        <div className="card-base p-4 sm:p-5 max-w-2xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="section-title">
               {editId ? "Edit Leave Type" : "New Leave Type"}
@@ -240,7 +270,7 @@ const LeaveTypes = () => {
               </div>
             </div>
 
-            <div className="flex gap-3 mt-5">
+            <div className="flex flex-wrap items-center gap-3 mt-5">
               <button type="submit" className="btn-primary" disabled={saving}>
                 <Check size={14} />
                 {saving ? "Saving..." : editId ? "Update" : "Save Leave Type"}
@@ -248,11 +278,33 @@ const LeaveTypes = () => {
 
               <button
                 type="button"
-                className=" btn-outline"
+                className="btn-outline"
                 onClick={handleCancel}
               >
                 Cancel
               </button>
+
+              {/* Enforce Balance Toggle */}
+              <div className="flex items-center gap-2.5 sm:ml-auto">
+                <div className="text-right">
+                  <p className="text-xs font-semibold text-slate-400">Enforce Balance</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => set("allow_past_dates", !form.allow_past_dates)}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
+                    form.allow_past_dates ? "bg-accent" : "bg-slate-600"
+                  }`}
+                  role="switch"
+                  aria-checked={form.allow_past_dates}
+                >
+                  <span
+                    className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform duration-200 ${
+                      form.allow_past_dates ? "translate-x-4" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -281,6 +333,10 @@ const LeaveTypes = () => {
                 <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">
                   Max Leaves Limit
                 </th>
+                <th className="table-th font-semibold text-[rgb(173,173,173)] whitespace-nowrap">
+                  Enforce Balance
+                </th>
+
                 <th className="table-th text-right font-semibold text-[rgb(173,173,173)] whitespace-nowrap">
                   Actions
                 </th>
@@ -311,6 +367,23 @@ const LeaveTypes = () => {
 
                   <td className="table-td text-slate-400 text-[12.5px] whitespace-nowrap">
                     {lt.max_allowed_leaves}
+                  </td>
+                  <td className="table-td whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleEnforce(lt)}
+                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
+                        enforceMap[lt.id] ? "bg-accent" : "bg-slate-600"
+                      }`}
+                      role="switch"
+                      aria-checked={!!enforceMap[lt.id]}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform duration-200 ${
+                          enforceMap[lt.id] ? "translate-x-4" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </td>
                   <td className="table-td">
                     <div className="flex items-center justify-end gap-2">

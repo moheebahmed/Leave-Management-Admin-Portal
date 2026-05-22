@@ -23,7 +23,6 @@ const DEPARTMENTS = [
   "Marketing",
 ];
 
-// Extract HH:MM from "HH:MM:SS" or "2026-01-01T18:00:00.000Z" or "2026-01-01 18:00:00"
 const extractTime = (val) => {
   if (!val) return null;
   const s = String(val);
@@ -162,7 +161,6 @@ const AttendanceRecords = () => {
     setSearch("");
   };
 
-  // Filter employees by search / dept
   const filteredEmps = empList.filter((emp) => {
     const emp_no = String(emp.employee_code || emp.id);
     const name = (emp.full_name || "").toLowerCase();
@@ -222,7 +220,6 @@ const AttendanceRecords = () => {
           )}
         </div>
 
-        {/* Row 2: All filters in a responsive grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {/* Month */}
           <div className="flex flex-col gap-1">
@@ -290,7 +287,6 @@ const AttendanceRecords = () => {
             />
           </div>
 
-          {/* Search — full width on mobile, last col on desktop */}
           <div className="flex flex-col gap-1 col-span-2 sm:col-span-3 lg:col-span-1">
             <label className="text-[10px] text-slate-600 font-semibold uppercase tracking-widest">
               Search
@@ -368,7 +364,6 @@ const AttendanceRecords = () => {
                 const isOpen = !!expanded[emp_no];
                 const isLoading = !!empLoadingMap[emp.id];
 
-                // Filter loaded records by date filters
                 const empRecords = (attendanceByEmp[emp.id] || []).filter(
                   (r) => {
                     const matchMonth = selectedMonth
