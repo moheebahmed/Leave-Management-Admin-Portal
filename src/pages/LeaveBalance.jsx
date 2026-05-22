@@ -84,7 +84,6 @@ const LeaveBalance = () => {
     }
   };
 
-  // Row expand/collapse toggle
   const toggleRow = (empId) => {
     setExpandedRows((prev) => ({
       ...prev,
@@ -104,7 +103,6 @@ const LeaveBalance = () => {
     }
   };
 
-  // Total records count
   const totalRecords = groupedBalances.reduce(
     (sum, g) => sum + g.balances.length,
     0,
