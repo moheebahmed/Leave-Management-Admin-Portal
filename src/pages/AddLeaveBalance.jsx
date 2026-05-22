@@ -17,7 +17,6 @@ const AddLeaveBalance = () => {
   const [leaveForm, setLeaveForm] = useState({});
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [enforceTrue, setEnforceTrue] = useState(false);
 
   useEffect(() => {
     axios
@@ -69,9 +68,7 @@ const AddLeaveBalance = () => {
                 prefilled[b.leave_type_id] = b.total_allowed;
               });
               setLeaveForm(prefilled);
-              // Set enforceTrue based on first balance's enforce_balance value
-              if (balances.length > 0 && balances[0].enforce_balance) {
-                setEnforceTrue(true);
+              if (balances.length > 0) {
               }
             })
             .catch(() => { });
@@ -146,7 +143,7 @@ const AddLeaveBalance = () => {
         ([leave_type_id, total_allowed]) => ({
           leave_type_id: Number(leave_type_id),
           total_allowed: Number(total_allowed),
-          enforce_balance: enforceTrue ? 1 : 0,
+          enforce_balance: 0,
         }),
       );
 
@@ -208,7 +205,7 @@ const AddLeaveBalance = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-4xl w-full">
         {/* Form */}
-        <div className="lg:col-span-2 card-base p-6">
+        <div className="lg:col-span-2 card-base p-4 sm:p-6">
           <h3 className="section-title mb-5">Leave Allocation</h3>
 
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
@@ -292,9 +289,9 @@ const AddLeaveBalance = () => {
                         </div>
 
                         {/* Leave Name */}
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <span
-                            className={`text-sm block ${isChecked ? "text-slate-200" : "text-slate-400"}`}
+                            className={`text-sm block truncate ${isChecked ? "text-slate-200" : "text-slate-400"}`}
                           >
                             {lt.name}
                           </span>
@@ -307,7 +304,7 @@ const AddLeaveBalance = () => {
 
                         {/* Days Input */}
                         {isChecked && (
-                          <div className="flex flex-col items-end gap-1">
+                          <div className="flex flex-col items-end gap-1 shrink-0">
                             <input
                               type="number"
                               min="1"
@@ -326,7 +323,7 @@ const AddLeaveBalance = () => {
                                   setDays(lt.id, val);
                                 }
                               }}
-                              className={`w-20 text-xs text-center form-input-base py-1 ${isExceeded
+                              className={`w-16 sm:w-20 text-xs text-center form-input-base py-1 ${isExceeded
                                   ? "!border-danger focus:!ring-danger/10"
                                   : ""
                                 }`}
@@ -355,31 +352,6 @@ const AddLeaveBalance = () => {
               </p>
             </div>
 
-            {/* Enforce True Toggle */}
-            <div className="flex items-center justify-between p-3 rounded-lg border border-border bg-surface/40">
-              <div>
-                <p className="text-sm text-slate-300 font-medium">Enforce Balance</p>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Override existing balance and force-set the new values.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setEnforceTrue((prev) => !prev)}
-                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
-                  enforceTrue ? "bg-accent" : "bg-slate-600"
-                }`}
-                role="switch"
-                aria-checked={enforceTrue}
-              >
-                <span
-                  className={`pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform duration-200 ${
-                    enforceTrue ? "translate-x-4" : "translate-x-0"
-                  }`}
-                />
-              </button>
-            </div>
-
             {/* Buttons */}
             <div className="flex gap-3 pt-2">
               <button type="submit" className="btn-primary" disabled={loading}>
@@ -403,7 +375,7 @@ const AddLeaveBalance = () => {
 
         {/* Preview */}
         <div className="space-y-4">
-          <div className="card-base p-5">
+          <div className="card-base p-4 sm:p-5">
             <h4 className="section-title text-[13px] mb-4">Preview</h4>
 
             {selectedEmployee ? (

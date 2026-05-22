@@ -41,7 +41,6 @@ const Navbar = ({ toggleSidebar }) => {
     }
   }, [showNotifications])
 
-  // Close logout dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (logoutRef.current && !logoutRef.current.contains(e.target)) {
@@ -52,14 +51,13 @@ const Navbar = ({ toggleSidebar }) => {
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
-  // Close everything on route change
+
   useEffect(() => {
     setShowNotifications(false)
     setShowLogoutMenu(false)
     setShowMobileSearch(false)
   }, [pathname])
 
-  // Lock body scroll when mobile notification panel is open
   useEffect(() => {
     if (isMobile && showNotifications) {
       document.body.style.overflow = 'hidden'
@@ -91,7 +89,6 @@ const Navbar = ({ toggleSidebar }) => {
 
   const userInitials = (userEmail?.slice(0, 2) || 'AD').toUpperCase()
 
-  // ── Notification Panel (shared UI for both mobile & desktop) ──
   const NotificationPanel = () => (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Header */}
@@ -185,14 +182,6 @@ const Navbar = ({ toggleSidebar }) => {
 
    
         <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-
- 
-          {/* <div className="hidden sm:flex items-center gap-2 bg-card/60 border border-border rounded-lg px-3 py-1.5 text-xs text-slate-500 cursor-pointer hover:border-border-bright transition-colors">
-            <Search size={12} />
-            <span className="hidden md:inline">Quick search…</span>
-            <span className="ml-1 text-[10px] bg-border px-1.5 py-0.5 rounded text-slate-600">⌘K</span>
-          </div> */}
-
           {/* Mobile search icon */}
           {!showMobileSearch && (
             <button onClick={() => setShowMobileSearch(true)} className="btn-ghost sm:hidden" aria-label="Search">
@@ -215,7 +204,6 @@ const Navbar = ({ toggleSidebar }) => {
             )}
           </button>
 
-          {/* Desktop notification dropdown (sm and above) */}
           {showNotifications && !isMobile && (
             <>
               <div
@@ -267,15 +255,12 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
       </header>
 
-      {/* ── Mobile Notification Panel (full screen overlay) ── */}
       {showNotifications && isMobile && (
         <>
-          {/* Dark backdrop */}
           <div
             className="fixed inset-0 bg-black/60 z-[1000]"
             onClick={() => setShowNotifications(false)}
           />
-          {/* Panel slides in from top */}
           <div className="fixed top-14 left-0 right-0 z-[1001] mx-3 rounded-xl border border-border shadow-2xl overflow-hidden animate-fade-slide"
             style={{ backgroundColor: 'var(--color-surface, #1a1f2e)', maxHeight: 'calc(100vh - 80px)' }}
           >
