@@ -92,17 +92,13 @@ const Sidebar = ({ collapsed, onClose }) => {
       >
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="w-10 h-10 shrink-0">
-            <img
-              src="/logo.png"
-              alt="logo"
-              className="w-full h-full object-contain"
-            />
+            <a href="#"><img src="/logo.png" className="w-full h-full object-contain" /></a>
           </div>
           <div
             className={`transition-opacity duration-200 ${collapsed ? "opacity-0 pointer-events-none w-0" : "opacity-100"}`}
           >
             <div className="font-syne font-bold text-sm text-slate-100 whitespace-nowrap leading-tight">
-              RecallHRM
+              <a href="#">RecallHRM</a>
             </div>
             <div className="text-[9px] font-semibold uppercase tracking-widest text-slate-500">
               HR Suite
@@ -114,8 +110,7 @@ const Sidebar = ({ collapsed, onClose }) => {
         {onClose && (
           <button
             onClick={onClose}
-            className="lg:hidden text-slate-500 hover:text-white transition-colors shrink-0 ml-2"
-          >
+            className="lg:hidden text-slate-500 hover:text-white transition-colors shrink-0 ml-2">
             <X size={16} />
           </button>
         )}
@@ -126,9 +121,8 @@ const Sidebar = ({ collapsed, onClose }) => {
         {NAV_GROUPS.map((group) => (
           <div key={group.label}>
             <div
-              className={`text-[9px] font-semibold uppercase tracking-widest text-slate-600 px-2 pb-1.5 transition-opacity duration-200 ${
-                collapsed ? "opacity-0" : "opacity-100"
-              }`}
+              className={`text-[9px] font-semibold uppercase tracking-widest text-slate-600 px-2 pb-1.5 transition-opacity duration-200 ${collapsed ? "opacity-0" : "opacity-100"
+                }`}
             >
               {group.label}
             </div>
@@ -141,20 +135,18 @@ const Sidebar = ({ collapsed, onClose }) => {
                   onClick={onClose}
                   className={({ isActive }) =>
                     `relative flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium transition-all duration-150 overflow-hidden whitespace-nowrap
-                    ${
-                      isActive
-                        ? "bg-accent/10 text-accent border border-accent/20 nav-active-bar"
-                        : "text-slate-500 hover:bg-card/70 hover:text-slate-200"
+                    ${isActive
+                      ? "bg-accent/10 text-accent border border-accent/20 nav-active-bar"
+                      : "text-slate-500 hover:bg-card/70 hover:text-slate-200"
                     }`
                   }
                 >
                   <Icon size={15} className="shrink-0" />
                   <span
-                    className={`transition-opacity duration-200 ${
-                      collapsed
-                        ? "opacity-0 pointer-events-none"
-                        : "opacity-100"
-                    }`}
+                    className={`transition-opacity duration-200 ${collapsed
+                      ? "opacity-0 pointer-events-none"
+                      : "opacity-100"
+                      }`}
                   >
                     {label}
                   </span>
@@ -167,29 +159,18 @@ const Sidebar = ({ collapsed, onClose }) => {
         {/* System */}
         <div>
           <div
-            className={`text-[9px] font-semibold uppercase tracking-widest text-slate-600 px-2 pb-1.5 transition-opacity duration-200 ${
-              collapsed ? "opacity-0" : "opacity-100"
-            }`}
+            className={`text-[9px] font-semibold uppercase tracking-widest text-slate-600 px-2 pb-1.5 transition-opacity duration-200 ${collapsed ? "opacity-0" : "opacity-100"
+              }`}
           >
             System
           </div>
-          {/* <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium text-slate-500 hover:bg-card/70 hover:text-slate-200 transition-all duration-150 overflow-hidden whitespace-nowrap">
-            <Settings size={15} className="shrink-0" />
-            <span className={`transition-opacity duration-200 ${collapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-              Settings
-            </span>
-          </button> */}
+
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] font-medium text-slate-500 hover:bg-card/70 hover:text-danger transition-all duration-150 overflow-hidden whitespace-nowrap"
           >
             <LogOut size={15} className="shrink-0" />
-            <span
-              className={`transition-opacity duration-200 ${collapsed ? "opacity-0" : "opacity-100"}`}
-            >
-              Logout
-            </span>
-          </button>
+            <span className={`transition-opacity duration-200 ${collapsed ? "opacity-0" : "opacity-100"}`}  >  Logout </span>  </button>
         </div>
       </nav>
 
@@ -197,11 +178,7 @@ const Sidebar = ({ collapsed, onClose }) => {
       <div className="p-2 border-t border-border">
         <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg overflow-hidden">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 overflow-hidden">
-            <img
-              src="/logo.png"
-              alt="logo"
-              className="w-full h-full object-contain"
-            />
+            <a href="#"><img src="/logo.png" className="w-full h-full object-contain" /></a>
           </div>
           <div
             className={`transition-opacity duration-200 ${collapsed ? "opacity-0" : "opacity-100"}`}
