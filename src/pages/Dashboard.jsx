@@ -13,12 +13,6 @@ import Avatar from "../components/Avatar";
 import { useApp } from "../layouts/DashboardLayout";
 import { getAvatarColor } from "../data/initialData";
 
-// const DUMMY_PENDING = [
-//   { id: 'dummy-1', Employee: { full_name: 'Ayesha Khan' }, LeaveType: { name: 'Annual Leave' }, total_days: 3 },
-//   { id: 'dummy-2', Employee: { full_name: 'Usman Tariq' }, LeaveType: { name: 'Sick Leave' }, total_days: 1 },
-//   { id: 'dummy-3', Employee: { full_name: 'Sara Malik' }, LeaveType: { name: 'Emergency Leave' }, total_days: 2 },
-// ]
-
 const Dashboard = () => {
   const { showToast } = useApp();
   const [employees, setEmployees] = useState([]);
@@ -55,7 +49,6 @@ const Dashboard = () => {
         allRequests.filter((r) => r.status === "APPROVED").length,
       );
       setLeaveTypes(typesRes.data.data.leave_types || []);
-      // Recent activity — latest 5 requests regardless of status
       setRecentActivity(allRequests.slice(0, 5));
     } catch (error) {
       showToast("Failed to load dashboard data");
@@ -80,7 +73,6 @@ const Dashboard = () => {
     }
   };
 
-  // Department breakdown from real employees
   const depts = ["Engineering", "Design", "Marketing", "HR", "Finance"];
   const deptData = depts.map((d, i) => ({
     name: d,
@@ -89,7 +81,6 @@ const Dashboard = () => {
   }));
   const maxCount = Math.max(...deptData.map((d) => d.count), 1);
 
-  // Recent activity from all latest requests
   const activityList = recentActivity.map((r) => ({
     color:
       r.status === "APPROVED"

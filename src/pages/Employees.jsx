@@ -98,7 +98,7 @@ const Employees = () => {
   const { employees, setEmployees, showToast } = useApp();
   const [search, setSearch] = useState("");
   const [departments, setDepartments] = useState([]);
-  const [deleteTarget, setDeleteTarget] = useState(null); // { id, name }
+  const [deleteTarget, setDeleteTarget] = useState(null);  
 
   useEffect(() => {
     fetchEmployees();
@@ -121,7 +121,11 @@ const Employees = () => {
       const res = await axios.get(`${API_BASE_URL}/hr/employees`, {
         headers: getAuthHeaders(),
       });
-      setEmployees(res.data.data.employees);
+      const all = res.data.data.employees || [];
+      const active = all.filter(
+        (e) => !e.is_deleted && !e.deletedAt && !e.deleted_at
+      );
+      setEmployees(active);
     } catch (error) {
       console.log("Error fetching employees:", error);
       showToast("Failed to fetch employees");
@@ -411,12 +415,12 @@ const Employees = () => {
 
             {/* Message */}
             <p className="text-center text-slate-400 text-sm mb-6">
-              Are you sure you want to delete{" "}
+             Are you sure you want to delete
               <span className="text-white font-medium">
                 {deleteTarget.name}
               </span>
               ?{" "}
-              <span className="text-danger/80">
+              <span className="text-danger/80 font-[800]">
                 This action cannot be undone.
               </span>
             </p>
@@ -424,14 +428,14 @@ const Employees = () => {
             {/* Buttons */}
             <div className="flex gap-3">
               <button
-                className="flex-1 btn-outline flex justify-center items-center"
+                className="flex-1 btn-outline flex justify-center items-center text-white"
                 onClick={() => setDeleteTarget(null)}
               >
                 Cancel
               </button>
 
               <button
-                className="flex-1 bg-danger/90 hover:bg-danger text-white text-xs font-semibold px-4 py-2 rounded-lg border border-danger/50 transition-colors"
+                className="flex-1 bg-danger/90 hover:bg-danger text-white text-xs font-bold px-4 py-2 rounded-lg border border-danger/50 transition-colors"
                 onClick={confirmDelete}
               >
                 Yes, Delete
